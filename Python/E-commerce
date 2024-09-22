@@ -1,0 +1,118 @@
+class Product:
+    # Class attributes ...
+    
+    def __init__(self, name, price, deal_price, rating):
+        # instance attributes
+        self.name = name
+        self.price = price
+        self.deal_price = deal_price
+        self.rating = rating
+        self.you_saved = price - deal_price
+        
+    def display_product_details(self):
+         print("Name: {}".format(self.name))
+         print("Price: {}".format(self.price))
+         print("Deal_price: {}".format(self.deal_price))
+         print("You Saved: {}".format(self.you_saved))
+         print("Ratings: {}".format(self.rating))
+         
+    def get_deal_price(self):
+        return self.deal_price
+         
+class Electronic_Item(Product): # Inheritence Method
+          # Electronic_Item : Subclass and Product : Superclass
+    def __init__(self, name, price, deal_price, rating, warrenty_in_months): # Method Overriding    
+        super().__init__(name, price, deal_price, rating)
+        self.warrenty_in_months = warrenty_in_months
+        
+    def display_product_details(self): # Method Overriding
+        super().display_product_details()
+        print("Warrenty: {} Months".format(self.warrenty_in_months))
+ 
+ # Multilevel Inheritence       
+class Laptop(Electronic_Item):
+    def __init__(self, name, price, deal_price, rating, warrenty_in_months, ram, os, storage, processor):
+        super().__init__(name, price, deal_price, rating, warrenty_in_months)
+        self.ram = ram
+        self.os = os
+        self.storage = storage
+        self.processor = processor
+        
+    def display_product_details(self):
+        super().display_product_details()
+        print("RAM: {} GB".format(self.ram))
+        print("OS: {}".format(self.os))
+        print("Storage: {} GB".format(self.storage))
+        print("Processor: {}".format(self.processor))
+        
+class Grocery_Item(Product): # Inheritence Method
+          # Electronic_Item : Subclass and Product : Superclass
+    def __init__(self, name, price, deal_price, rating, expiry_date): # Method Overriding    
+        super().__init__(name, price, deal_price, rating)
+        self.expiry_date = expiry_date
+        
+    def display_product_details(self): # Method Overriding
+        super().display_product_details()
+        print("Expiry Date: {}".format(self.expiry_date))        
+        
+class Order:
+    # Class attribute 
+    delivery_charge = {"Prime_delivery": 0 , "Normal_delivery": 50}
+    def __init__(self, delivery_speed, delivery_address):
+        self.items_in_cart = [] # List contains product and quantity ( Composition )
+        self.delivery_speed = delivery_speed
+        self.delivery_address = delivery_address
+        
+    def add_item(self, product, quantity):
+        items = (product, quantity)
+        self.items_in_cart.append(items)
+        
+    def display_order_details(self):
+        print("Delivery type: {}".format(self.delivery_speed))
+        print("Delivery address: {}".format(self.delivery_address))
+        for product, quantity in self.items_in_cart:
+            print("-------------------")
+            product.display_product_details()
+            print("Quantity: {}\n".format(quantity))
+        print("-------------------")
+        order_delivery_charge = Order.get_delivery_charge(self.delivery_speed)
+        print("Delivery Charge: {}".format(order_delivery_charge))
+        print("Total Bill: {}".format(self.display_total_bill()))
+            
+    # Total bill
+    def display_total_bill(self):
+        total_bill = 0
+        for product, quantity in self.items_in_cart:
+            price = product.get_deal_price() * quantity
+            total_bill += price
+        order_delivery_charge = Order.get_delivery_charge(self.delivery_speed)
+        total_bill += order_delivery_charge
+        return total_bill   
+        
+    @classmethod
+    def get_delivery_charge(cls, delivery_type):
+        return cls.delivery_charge[delivery_type]
+        
+        
+    
+         
+# Creating a Instace For class or Object
+Tv = Electronic_Item("Xiami", 25000, 23500, 4.6, 30)
+#Tv.display_product_details()  # (Tv = Object) and (display_product_details = Method Name) 
+
+Flour = Grocery_Item("Rice Flour", 45, 42, 4.2, "Jan 2026")
+#Flour.display_product_details()  # (Tv = Object) and (display_product_details = Method Name) 
+
+Milk = Grocery_Item("Milk", 25, 23, 4, "Next 4 days")
+Keyboard = Electronic_Item("Zebronics", 300, 280, 4.5, 12)
+
+Laptop = Laptop("lenovo", 35000, 32500, 4.6, 24, 16, "Windows 10 Pro", 512, "Gen 5")
+
+
+My_order = Order("Prime_delivery", "Perambalur")
+My_order.add_item(Tv, 1)
+My_order.add_item(Laptop, 1)
+My_order.add_item(Milk, 3)
+My_order.add_item(Keyboard, 1)
+    
+My_order.display_order_details()
